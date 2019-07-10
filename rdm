@@ -44,6 +44,10 @@ function loadEnvironmentConfig()
 {
 	if [[ ! -d $ENVPATH/bin ]]
 	then
+		if [[ $EUID -ne 0 ]]; then
+			echo "This script must be run as root to create the initial setup!"
+			exit 1
+		fi
 		mkdir -p /var/virtualenv
 		nix-env -iA nixos.python37
 		nix-env -iA nixos.python37Packages.pip
