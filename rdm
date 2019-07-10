@@ -99,13 +99,13 @@ deployKeyCheck
 
 printf "\n## RDM PRO Deploy Stage 1 begins at $(date) ##\n"
 
-githubrelease --github-token ${GITHUB_TOKEN} release $REPO create "${releaseCodename}" 
+githubrelease --github-token "${GITHUB_TOKEN}" release $REPO create "${releaseCodename}" 
 
-githubrelease --github-token ${GITHUB_TOKEN} release $REPO edit --tag-name "${releaseCodename}" --name "${releaseName}" "${releaseCodename}"
+githubrelease --github-token "${GITHUB_TOKEN}" release $REPO edit --tag-name "${releaseCodename}" --name "${releaseName}" "${releaseCodename}"
 
 printf "\n## RDM PRO Deploy Stage 2 begins ##\n"
 
-githubrelease --github-token ${GITHUB_TOKEN} asset $REPO upload "${releaseCodename}" $PWD/*
+githubrelease --github-token "${GITHUB_TOKEN}" asset $REPO upload "${releaseCodename}" $PWD/*
 
 printf "\n## RDM PRO Deploy finished at $(date) ##\n"
 printf "\nHave a nice night!"
