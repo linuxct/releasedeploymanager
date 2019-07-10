@@ -1,17 +1,11 @@
 #!/usr/bin/env bash
 
-###################################
-###                             ###
-###    Release Deploy Manager   ###
-###                             ###
-###        version 0.1          ###
-###                             ###
-###################################
-
 ## Environment Variables
 
   REPO="Descendant/InOps"
   ENVPATH="/var/virtualenv"
+  VERSION="0.2"
+
   if [ ! -z "$1" ]   
   then
 	GITHUB_TOKEN="$1"
@@ -29,16 +23,12 @@
 
 function banner()
 {
-	if [[ $EUID -ne 0 ]]; then
-		echo "This script must be run as root!"
-		exit 1
-	fi
 	printf "\n"
 	printf "###################################\n"
 	printf "###                             ###\n"
 	printf "###    Release Deploy Manager   ###\n"
 	printf "###                             ###\n"
-	printf "###        version 0.1          ###\n"
+	printf "###        version ${VERSION}          ###\n"
 	printf "###                             ###\n"
 	printf "###################################\n"
 	printf "\n"
@@ -69,8 +59,6 @@ function getReleaseInfo()
 {
 	echo "GitHub release name you desire?"
 	read releaseName
-	echo "GitHub release text you desire?"
-	read releaseText
 }
 
 function verificationChecks()
@@ -109,20 +97,15 @@ getReleaseInfo
 verificationChecks
 deployKeyCheck
 
-printf "\n## GHUBREL PRO Deploy Stage 1 begins at $(date) ##\n"
+printf "\n## RDM PRO Deploy Stage 1 begins at $(date) ##\n"
 
-githubrelease release $REPO create ${releaseCodename}
+githubrelease --github-token ${GITHUB_TOKEN} release $REPO create ${releaseCodename} 
 
-if [[ ! -z "$releaseText" ]]
-then
-	githubrelease release $REPO edit --tag-name ${releaseCodename} --name ${releaseName} --body ${releaseText} ${releaseCodename}
-else
-	githubrelease release $REPO edit --tag-name ${releaseCodename} --name ${releaseName} ${releaseCodename}
-fi
+githubrelease --github-token ${GITHUB_TOKEN} release $REPO edit --tag-name ${releaseCodename} --name ${releaseName} ${releaseCodename}
 
-printf "\n## GHUBREL PRO Deploy Stage 2 begins ##\n"
+printf "\n## RDM PRO Deploy Stage 2 begins ##\n"
 
-githubrelease asset $REPO upload ${releaseCodename} $PWD/*
+githubrelease --github-token ${GITHUB_TOKEN} asset $REPO upload ${releaseCodename} $PWD/*
 
-printf "\n## GHUBREL PRO Deploy finished at $(date) ##\n"
+printf "\n## RDM PRO Deploy finished at $(date) ##\n"
 printf "\nHave a nice night!"
